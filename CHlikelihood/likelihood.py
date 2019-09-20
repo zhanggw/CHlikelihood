@@ -1,17 +1,24 @@
 import math
 import jieba
 
+stopwordsFile = 'stopwords.txt'
 
 class Likelihood:
 
+    stopwords = []
+    
+    def __init__(self):
+        with open(stopwordsFile, 'r') as swFile:
+            self.stopwords = [word.strip() for word in swFile.readlines()]
+    
     def word2vec(self, word1, word2):
 
         if self.punctuation is False:
-            pun_list = ['。', '，', '、', '？', '！', '；', '：', '“', '”', '‘', '’', '「', '」', '『', '』', '（', '）', '[', ']',
+            pun_list = [' ', '。', '，', '、', '？', '！', '；', '：', '“', '”', '‘', '’', '「', '」', '『', '』', '（', '）', '[', ']',
                         '〔', '〕', '【', '】', '——', '—', '……', '…', '—', '-', '～', '·', '《', '》', '〈', '〉', '﹏﹏', '___',
                         '.']
-            seg_list_1 = [w for w in list(jieba.cut(word1, cut_all=False)) if w not in pun_list]
-            seg_list_2 = [w for w in list(jieba.cut(word2, cut_all=False)) if w not in pun_list]
+            seg_list_1 = [w for w in list(jieba.cut(word1, cut_all=True)) if w not in pun_list and w not in self.stopwords]
+            seg_list_2 = [w for w in list(jieba.cut(word2, cut_all=True)) if w not in pun_list and w not in self.stopwords]
         else:
             seg_list_1 = list(jieba.cut(word1, cut_all=False))
             seg_list_2 = list(jieba.cut(word2, cut_all=False))
